@@ -12,6 +12,6 @@ msg="Update website files $(date '+%Y-%m-%d %H:%M:%S')"
 git commit -m "$msg" || echo "No changes to commit."
 
 # Push to main branch
-git push origin main
+git push origin master
 
 echo "All folders and files pushed to your GitHub repo (and Render/Netlify will auto-update)!"
