@@ -1,30 +1,17 @@
 #!/bin/bash
 
-# Commit message with timestamp
-commit_msg="Auto commit at $(date +'%Y-%m-%d %H:%M:%S')"
+# Automatically stage (add) ALL files and all folders/changes
+git add -A
 
-# Initialize git repository if not exists
-if [ ! -d .git ]; then
-  git init
-fi
+# Prevent node_modules and other ignored files from being included unless really needed
+# (Remove next line if you actually want to include hidden data/.env etc)
+git reset node_modules/ .env .DS_Store 2>/dev/null
 
-# Add all changes
-git add .
+# Commit with timestamp
+msg="Update website files $(date '+%Y-%m-%d %H:%M:%S')"
+git commit -m "$msg" || echo "No changes to commit."
 
-# Commit changes (ignore error if no changes to commit)
-git commit -m "$commit_msg" || echo "No changes to commit"
+# Push to main branch
+git push origin main
 
-# Push changes using gh CLI (assumes gh is logged in already)
-BRANCH="main"
-REMOTE_URL=$(git remote get-url origin 2>/dev/null)
-
-if [ -z "$REMOTE_URL" ]; then
-  # Set remote to repo on your GitHub account
-  USERNAME=$(gh api user --jq .login)
-  REPO_NAME=$(basename `pwd`)
-  gh repo create $REPO_NAME --source=. --remote=origin --push --public --confirm
-else
-  git push origin $BRANCH --force
-fi
-
-echo "Pushed changes to GitHub repo."
+echo "All folders and files pushed to your GitHub repo (and Render/Netlify will auto-update)!"
